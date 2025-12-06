@@ -284,7 +284,7 @@ class SyncManager:
                         matched_time = self.transcriber.find_time_for_text(transcript_path, target_text)
                         if matched_time is not None:
                             logger.info(f"   ✅ Match at {matched_time:.2f}s. Sending Update...")
-                            self.abs_client.update_progress(abs_id, matched_time)
+                            self.abs_client.update_progress(abs_id, current_time=matched_time, progress=kosync_progress, ebook_progress=kosync_progress)
                             prev_state['abs_ts'] = matched_time
                             prev_state['kosync_pct'] = kosync_progress
                             updated_ok = True

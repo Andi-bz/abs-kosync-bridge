@@ -97,15 +97,29 @@ class ABSClient:
             pass
         return 0.0
 
-    def update_progress(self, item_id, timestamp):
+    def update_progress(self, item_id, current_time=None, progress=None, ebook_progress=None):
         url = f"{self.base_url}/api/me/progress/{item_id}"
-        payload = {
-            "currentTime": timestamp,
-            "duration": 0, 
-            "isFinished": False
-        }
+
+        payload = {}
+
+        if current_time is not None:
+            payload["currentTime"] = float(current_time)
+
+        if progress is not None:
+            payload["progress"] = float(progress)
+
+        if ebook_progress is not None:
+            payload["ebookProgress"] = float(ebook_progress)
+
         try:
-            requests.patch(url, headers=self.headers, json=payload)
+            r = requests.patch(url, headers=self.headers, json=payload)
+            logger.info(
+                "ABS update_progress %s -> %s %s",
+                url,
+                r.status_code,
+                (r.text or "")[:200],
+            )
+            r.raise_for_status()
         except Exception as e:
             logger.error(f"Failed to update ABS progress: {e}")
 
